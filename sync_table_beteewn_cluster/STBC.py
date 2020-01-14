@@ -2,38 +2,42 @@
 # -*- coding: UTF-8 -*-
 
 import sys, getopt, os
+import uuid
 
 def parseArgs(argv):
-    inputfile = ''
-    outputfile = ''
+    dbname   = ''
+    hostname = ''
+    dbuser   = ''
     try:
-       opts,args= getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-       for opt, arg in opts:
-           if opt == '-h':
-               print 'commandsLineArgv -i <inputfile> -o <outputfile>'
-               sys.exit()
-           elif opt in ("-i", "--ifile"):
-               inputfile = arg
-           elif opt in ("-o", "--ofile"):
-               outputfile = arg
+        opts,args= getopt.getopt(argv,"?:h:d:U:h",["help","dbname","hostname","username"])
+        for opt, arg in opts:
+            print arg
+            if opt in ('-h','--help','-?'):
+                print 'STBC --dbname <database name> --hostname <hostname> --username <username>'
+                sys.exit()
+            elif opt in ("-d", "--dbname"):
+                dbname = arg
+            elif opt in ("-U", "--username"):
+                dbuser = arg
+            elif opt in ("-h","--hostname"):
+                hostname = arg
     except getopt.GetoptError as err:
         print err
 
-    print 'input file name is ：', inputfile
-    print 'output file name is：', outputfile
 
-#parseArgs(sys.argv[1:])
+parseArgs(sys.argv[1:])
 
 #拼写sql
-sql  = "PGDATABASE=gpadmin PGPORT=5432 PGCLIENTENCODING=gb18030 PGUSER=gpadmin "
+sql  = "PGDATABASE= PGPORT=5432 PGCLIENTENCODING=gb18030 PGUSER=gpadmin "
 sql += ""
 
 cmds = """ssh gpadmin@10.9.10.130 -q << EOF
  psql -tAXc 'select * from pg_class limit 10'
  EOF
 """
-print os.system(cmds)
+#os.system(cmds)
 
 
 
-
+#get uuid code
+#print str(uuid.uuid4()).replace('-','')
